@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quadrado Todo List</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  
+
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="header">
+      <h1>Focusly</h1>
+      <p class="sub-header">Track your schedule with style</p>
+    </div>
+  </div>
+
+  <div class="task-grid">
+    
+
+  </div>
+
+
+  <input type="text" id="datepicker" placeholder="Escolher data">
+
+  <script>
+    flatpickr("#datepicker", {
+      dateFormat: "Y-m-d",
+      defaultDate: "today"
+    });
+  </script>
+
+  <script>
+    function toggleMenu(button) {
+      const menu = button.nextElementSibling;
+      const isVisible = menu.style.display === "flex";
+      document.querySelectorAll(".action-menu").forEach(m => m.style.display = "none");
+      if (!isVisible) menu.style.display = "flex";
+    }
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".todo-item")) {
+        document.querySelectorAll(".action-menu").forEach(m => m.style.display = "none");
+      }
+    });
+  </script>
+
+  <script src="scripts/script.js" type="module"></script>
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js' type="module"></script>
+</body>
+</html>

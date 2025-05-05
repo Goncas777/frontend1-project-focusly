@@ -1,0 +1,113 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0f0f10;
+    color: #f2f2f2;
+    padding: 2rem;
+  }
+
+  .app-container {
+    max-width: 480px;
+    margin: 0 auto 2rem auto;
+    background: #1a1a1d;
+    border-radius: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    padding: 2rem;
+  }
+
+  .header h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+  }
+
+  .sub-header {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-top: 0.5rem;
+  }
+
+  .task-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 3rem;
+    justify-content: center;
+  }
+
+  .todo-item {
+    background: #252528;
+    width: 250px;
+    border-radius: 1.25rem;
+    position: relative;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    transition: background 0.3s ease;
+  }
+  
+
+  .todo-item:hover {
+    background: #2d2d31;
+  }
+
+  .title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  .todo-meta {
+    font-size: 0.85rem;
+    color: #ccc;
+  }
+
+  .priority-high { color: #ff6b6b; font-weight: 600; }
+  .priority-medium { color: #f4c542; font-weight: 600; }
+  .priority-low { color: #65d6a6; font-weight: 600; }
+
+  .menu-button {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .action-menu {
+    position: absolute;
+    top: 2.2rem;
+    right: 0.6rem;
+    background: #1f1f22;
+    border-radius: 0.75rem;
+    padding: 0.4rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.4rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 3;
+  }
+
+  .action-menu button {
+    background: #333;
+    border: none;
+    padding: 0.4rem;
+    border-radius: 0.5rem;
+    color: #f2f2f2;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+  }
+
+  .action-menu button:hover {
+    background: #444;
+  }
