@@ -3,54 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quadrado Todo List</title>
+  <title>Focusly</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  
-
 </head>
 <body>
 
   <div class="app-container">
     <div class="header">
       <h1>Focusly</h1>
-      <p class="sub-header">Track your schedule with style</p>
+      <button id="new-task-button" class="new-task-button">Nova Tarefa</button> <!-- Botão "Nova Tarefa" -->
+      <input type="text" id="search-input" class="search-bar" placeholder="Search tasks...">
+    </div>
+  
+    <div class="main-content">
+      <div class="task-grid">
+        <!-- Tarefas serão carregadas aqui via JavaScript -->
+      </div>
+  
+      <div class="calendar-container">
+        <div class="calendar">
+          <!-- O calendário será gerado aqui via JavaScript -->
+        </div>
+      </div>
     </div>
   </div>
+  
+<!-- Modal para Nova Tarefa -->
+<div id="task-modal" class="task-modal">
+  <div class="modal-content">
+    <h2>Criar Nova Tarefa</h2>
+    <form id="task-form">
+      <!-- Nome da Tarefa -->
+      <div class="form-group">
+        <label for="task-name">Nome da Tarefa</label>
+        <input type="text" id="task-name" placeholder="Digite o nome da tarefa" required>
+      </div>
 
-  <div class="task-grid">
-    
+      <!-- Data de Vencimento -->
+      <div class="form-group">
+        <label for="task-date">Data de Vencimento</label>
+        <input type="datetime-local" id="task-date" required>
+      </div>
 
+      <!-- Prioridade -->
+      <div class="form-group">
+        <label for="task-priority">Prioridade</label>
+        <select id="task-priority" required>
+          <option value="1">Baixa</option>
+          <option value="2">Média</option>
+          <option value="3">Alta</option>
+        </select>
+      </div>
+
+      <!-- Tags -->
+      <div class="form-group">
+        <label for="task-tags">Tags</label>
+        <input type="text" id="task-tags" placeholder="Insira tags separadas por vírgula">
+      </div>
+
+      <!-- Tarefa Concluída -->
+      <div class="form-group">
+        <label for="task-completed">Concluída?</label>
+        <input type="checkbox" id="task-completed">
+      </div>
+
+      <!-- ID da Tarefa (visível apenas para edição, pode ser oculto em um novo formulário) -->
+      <input type="hidden" id="task-id">
+
+      <!-- Botões -->
+      <button type="submit" class="submit-button">Criar Tarefa</button>
+      <button type="button" class="close-button" id="close-modal">Fechar</button>
+    </form>
   </div>
+</div>
 
-
-  <input type="text" id="datepicker" placeholder="Escolher data">
-
-  <script>
-    flatpickr("#datepicker", {
-      dateFormat: "Y-m-d",
-      defaultDate: "today"
-    });
-  </script>
-
-  <script>
-    function toggleMenu(button) {
-      const menu = button.nextElementSibling;
-      const isVisible = menu.style.display === "flex";
-      document.querySelectorAll(".action-menu").forEach(m => m.style.display = "none");
-      if (!isVisible) menu.style.display = "flex";
-    }
-
-    document.addEventListener("click", function (e) {
-      if (!e.target.closest(".todo-item")) {
-        document.querySelectorAll(".action-menu").forEach(m => m.style.display = "none");
-      }
-    });
-  </script>
 
   <script src="scripts/script.js" type="module"></script>
-  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js' type="module"></script>
 </body>
 </html>

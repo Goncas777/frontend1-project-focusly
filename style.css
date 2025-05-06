@@ -1,113 +1,328 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #0f0f10;
-    color: #f2f2f2;
-    padding: 2rem;
-  }
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0f0f10;
+  color: #f2f2f2;
+  padding: 2rem;
+}
 
-  .app-container {
-    max-width: 480px;
-    margin: 0 auto 2rem auto;
-    background: #1a1a1d;
-    border-radius: 2rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    padding: 2rem;
-  }
+.app-container {
+  max-width: 1550px;
+  margin: 0 auto 2rem auto;
+  background: #1a1a1d;
+  border-radius: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  padding: 2rem;
+}
 
-  .header h1 {
-    font-size: 1.75rem;
-    font-weight: 800;
-  }
+.header {
+  display: flex;
+  justify-content: center; /* Centraliza o conteúdo no eixo horizontal */
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
 
-  .sub-header {
-    font-size: 0.9rem;
-    color: #aaa;
-    margin-top: 0.5rem;
-  }
+.header h1 {
+  margin-right: auto; /* Empurra o h1 para a esquerda */
+  font-size: 1.75rem;
+  font-weight: 800;
+}
 
-  .task-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 3rem;
-    justify-content: center;
-  }
+.search-bar {
+  background-color: #333;
+  color: #f2f2f2;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 1.25rem;
+  font-size: 1rem;
+  width: 250px;
+  transition: background-color 0.3s ease;
+}
 
-  .todo-item {
-    background: #252528;
-    width: 250px;
-    border-radius: 1.25rem;
-    position: relative;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-    padding: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; 
-    transition: background 0.3s ease;
-  }
-  
+.search-bar:focus {
+  background-color: #444;
+  outline: none;
+}
 
-  .todo-item:hover {
-    background: #2d2d31;
-  }
 
-  .title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-  }
+.sub-header {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+}
 
-  .todo-meta {
-    font-size: 0.85rem;
-    color: #ccc;
-  }
+.main-content {
+  display: flex;
+  gap: 2rem;
+}
 
-  .priority-high { color: #ff6b6b; font-weight: 600; }
-  .priority-medium { color: #f4c542; font-weight: 600; }
-  .priority-low { color: #65d6a6; font-weight: 600; }
+.task-grid {
+  flex: 0 0 70%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  justify-content: center;
+  max-width: 1000px;
+}
 
-  .menu-button {
-    position: absolute;
-    top: 0.6rem;
-    right: 0.6rem;
-    background: none;
-    border: none;
-    color: #aaa;
-    font-size: 1.1rem;
-    cursor: pointer;
-    z-index: 2;
-  }
+.calendar-container {
+  flex: 0 0 30%;
+  background: #252528;
+  border-radius: 1.25rem;
+  padding: 1rem;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  align-self: flex-start;
+}
 
-  .action-menu {
-    position: absolute;
-    top: 2.2rem;
-    right: 0.6rem;
-    background: #1f1f22;
-    border-radius: 0.75rem;
-    padding: 0.4rem;
-    display: none;
-    flex-direction: column;
-    gap: 0.4rem;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    z-index: 3;
-  }
+.calendar {
+  background: #1f1f22;
+  border-radius: 1.25rem;
+  padding: 1rem;
+}
 
-  .action-menu button {
-    background: #333;
-    border: none;
-    padding: 0.4rem;
-    border-radius: 0.5rem;
-    color: #f2f2f2;
-    cursor: pointer;
-    transition: background 0.2s;
-    font-size: 0.95rem;
-  }
+.calendar-header {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 1rem;
+}
 
-  .action-menu button:hover {
-    background: #444;
-  }
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.calendar-cell {
+  background: #333;
+  padding: 0.5rem;
+  text-align: center;
+  color: #f2f2f2;
+  font-size: 0.9rem;
+  border-radius: 0.25rem;
+  width: 40px;
+  height: 40px;
+}
+
+.calendar-cell.today {
+  background: #ff6b6b;
+  color: #000;
+  font-weight: bold;
+}
+
+.calendar-cell.past {
+  opacity: 0.4;
+}
+
+.calendar-cell.empty {
+  display: none;
+}
+
+.todo-item {
+  background: #252528;
+  width: 180px;
+  border-radius: 1.25rem;
+  position: relative;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: background 0.3s ease;
+  height: 180px;
+}
+
+.todo-item:hover {
+  background: #2d2d31;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.todo-meta {
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.priority-high {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.priority-medium {
+  color: #f4c542;
+  font-weight: 600;
+}
+
+.priority-low {
+  color: #65d6a6;
+  font-weight: 600;
+}
+
+.menu-button {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.action-menu {
+  position: absolute;
+  top: 2.2rem;
+  right: 0.6rem;
+  background: #1f1f22;
+  border-radius: 0.75rem;
+  padding: 0.4rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.4rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 3;
+}
+
+.action-menu button {
+  background: #333;
+  border: none;
+  padding: 0.4rem;
+  border-radius: 0.5rem;
+  color: #f2f2f2;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.95rem;
+}
+
+.action-menu button:hover {
+  background: #444;
+}
+
+.calendar-cell:hover {
+  background: #444;
+  cursor: pointer;
+}
+
+
+/* Botão "Nova Tarefa" */
+.new-task-button {
+  background-color: #393637;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 1.25rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  position: absolute; /* Tornando o botão fixo abaixo do calendário */
+  left: 50%; /* Posicionando horizontalmente no meio */
+  transform: translateX(-50%); /* Ajuste fino para centralizar */
+  box-shadow: 0 4px 12px rgba(253, 49, 212, 0.406);
+  transition: background-color 0.3s;
+}
+
+.new-task-button:hover {
+  background-color: #ff02dd56;
+}
+
+/* Estilos do Modal */
+.task-modal {
+  display: none; /* Inicialmente oculto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background-color: #1a1a1d;
+  padding: 2rem;
+  border-radius: 1.25rem;
+  width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.modal-content h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #fff;
+}
+
+.form-group input[type="datetime-local"],
+.form-group input[type="text"],
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #333;
+  background: #252528;
+  color: #fff;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* Estilo para o campo checkbox */
+.form-group input[type="checkbox"] {
+  margin-top: 0.5rem;
+  cursor: pointer;
+}
+.submit-button {
+  background-color: #3a3a3a;
+  color: #fff;
+  padding: 1rem;
+  border: none;
+  border-radius: 1.25rem;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #00ff0d43;
+}
+
+.close-button {
+  background-color: #3b3737;
+  color: #fff;
+  padding: 1rem;
+  border: none;
+  border-radius: 1.25rem;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s;
+}
+
+.close-button:hover {
+  background-color: #f4000056;
+}
