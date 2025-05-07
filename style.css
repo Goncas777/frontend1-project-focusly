@@ -44,6 +44,7 @@ body {
   font-size: 1rem;
   width: 250px;
   transition: background-color 0.3s ease;
+  margin-right: 0.5rem;
 }
 
 .search-bar:focus {
@@ -145,6 +146,13 @@ body {
   background: #2d2d31;
 }
 
+.todo-item .completed-emoji {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+}
+
 .title {
   font-size: 1rem;
   font-weight: 600;
@@ -223,20 +231,25 @@ body {
   background-color: #393637;
   color: #fff;
   font-weight: bold;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 0.75rem;
   border: none;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   font-size: 1.2rem;
   cursor: pointer;
   position: absolute; /* Tornando o botão fixo abaixo do calendário */
   left: 50%; /* Posicionando horizontalmente no meio */
   transform: translateX(-50%); /* Ajuste fino para centralizar */
-  box-shadow: 0 4px 12px rgba(253, 49, 212, 0.406);
+  box-shadow: 2px 2px 2px rgba(253, 49, 212, 0.406);
   transition: background-color 0.3s;
 }
 
 .new-task-button:hover {
   background-color: #ff02dd56;
+}
+
+.new-task-button img {
+  width: 20px;
+  height: 20px;
 }
 
 /* Estilos do Modal */
@@ -325,4 +338,21 @@ body {
 
 .close-button:hover {
   background-color: #f4000056;
+}
+
+
+/* Estilos para o botão de reset */
+.reset-button {
+  background-color: #ff4757;  /* Cor de fundo vermelha */
+  color: white;  /* Cor do texto branca */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.reset-button:hover {
+  background-color: #ff6b81;  /* Cor mais clara quando passar o mouse */
 }

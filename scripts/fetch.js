@@ -10,3 +10,36 @@ export const fetchTasks = async () => {
     return [];
   }
 };
+
+export const createTask = async (newTask) => {
+  const response = await fetch(apiURL + "tasks", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newTask),
+  });
+  return await response.json();
+};
+
+
+// Função para atualizar uma tarefa
+export async function updateTask(taskData) {
+  try {
+      const response = await fetch(`${apiURL}/tasks/${taskData.id}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(taskData)
+      });
+
+      if (!response.ok) {
+          throw new Error("Erro ao atualizar a tarefa.");
+      }
+
+      return await response.json();
+  } catch (error) {
+      console.error("Erro ao atualizar tarefa:", error);
+  }
+}

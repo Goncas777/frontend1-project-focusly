@@ -1,14 +1,32 @@
-import { fetchTasks } from "./fetch.js";
+import { fetchTasks, createTask, updateTask } from "./fetch.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const tasks = await fetchTasks();
-    displayTasks(tasks);
-    generateCalendar();
+    displayTasks(filterUpcomingTasks(tasks));  // Filtra as tarefas
+    generateCalendar(tasks);
 
-    // Adicionar evento para a barra de pesquisa
     const searchInput = document.getElementById("search-input");
     searchInput.addEventListener("input", () => filterTasks(tasks));
 });
+
+function filterUpcomingTasks(tasks) {
+    const today = new Date();
+    
+    // Subtrai 2 dias de hoje para encontrar a data limite
+    const twoDaysAgo = new Date(today);
+    twoDaysAgo.setDate(today.getDate() - 2);
+
+    // Filtra as tarefas, mantendo as que têm dueDate maior ou igual a dois dias atrás
+    return tasks.filter(task => {
+        if (task.dueDate) {
+            const taskDate = new Date(task.dueDate);
+            // Compara a data da tarefa com dois dias antes de hoje
+            return taskDate >= twoDaysAgo;
+        }
+        return false; // Caso a tarefa não tenha dueDate
+    });
+}
+
 
 function displayTasks(tasks) {
     const taskContainer = document.querySelector(".task-grid");
@@ -53,16 +71,16 @@ function createTaskCard(task) {
     // Menu de ações
     const actionMenu = document.createElement("div");
     actionMenu.className = "action-menu";
-
     const actions = [
         { title: "Feita", icon: "https://cdn2.iconfinder.com/data/icons/my-cubicle/512/Check_Mark-512.png" },
-        { title: "Editar", icon: "https://static-00.iconduck.com/assets.00/edit-square-icon-1024x1022-pd40h6x1.png" },
+        { title: "Editar", icon: "https://static-00.iconduck.com/assets.00/edit-square-icon-1024x1022-pd40h6x1.png", onclick: () => openEditModal(task) },
         { title: "Apagar", icon: "https://static-00.iconduck.com/assets.00/edit-delete-symbolic-icon-417x512-fbzatn0z.png" }
     ];
 
-    actions.forEach(({ title, icon }) => {
+    actions.forEach(({ title, icon, onclick }) => {
         const button = document.createElement("button");
         button.title = title;
+        if (onclick) button.onclick = onclick;
 
         const i = document.createElement("i");
         i.className = `fas fa-${title.toLowerCase()}`;
@@ -90,7 +108,7 @@ function createTaskCard(task) {
     const meta = document.createElement("div");
     meta.className = "todo-meta";
 
-    const dueDate = task.dueDate || "Data indefinida";
+    const dueDate = task.dueDate ? formatDueDate(task.dueDate) : "Data indefinida";
 
     const priorityMap = {
         1: "Low",
@@ -106,10 +124,33 @@ function createTaskCard(task) {
 
     meta.textContent = `Due: ${dueDate} • `;
     meta.appendChild(span);
-
     card.appendChild(meta);
 
+    // Verifica se a tarefa foi completada e adiciona o emoji de check verde
+    if (task.completed) {
+        const checkEmoji = document.createElement("span");
+        checkEmoji.textContent = "✅";
+        checkEmoji.style.position = "absolute";
+        checkEmoji.style.bottom = "10px";
+        checkEmoji.style.right = "10px";
+        checkEmoji.style.fontSize = "1.5rem";
+        card.appendChild(checkEmoji);
+    }
+
     return card;
+}
+
+
+function formatDueDate(dueDate) {
+    const date = new Date(dueDate);
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
 
 function toggleMenu(button) {
@@ -125,88 +166,181 @@ document.addEventListener("click", function (e) {
     }
 });
 
-function generateCalendar() {
-  const calendarContainer = document.querySelector(".calendar");
-  const calendarHeader = document.createElement("div");
-  calendarHeader.className = "calendar-header";
-  const date = new Date();
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  calendarHeader.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-  calendarContainer.appendChild(calendarHeader);
+function generateCalendar(tasks) {
+    const calendarContainer = document.querySelector(".calendar");
+    const calendarHeader = document.createElement("div");
+    calendarHeader.className = "calendar-header";
+    const date = new Date();
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    calendarHeader.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+    calendarContainer.appendChild(calendarHeader);
 
-  const calendarGrid = document.createElement("div");
-  calendarGrid.className = "calendar-grid";
+    // Criar o botão de reset
+    const resetButton = document.createElement("button");
+    resetButton.id = "reset-calendar-button";
+    resetButton.className = "reset-button";
+    resetButton.textContent = "Resetar Calendário"; // Título do botão
+    calendarContainer.appendChild(resetButton);
 
-  // Criar os dias do mês
-  const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+    const calendarGrid = document.createElement("div");
+    calendarGrid.className = "calendar-grid";
 
-  // Preencher os dias antes do dia 1 (não deixa células vazias)
-  for (let i = 0; i < firstDayOfMonth; i++) {
-      const emptyCell = document.createElement("div");
-      emptyCell.className = "calendar-cell empty";
-      calendarGrid.appendChild(emptyCell);
-  }
+    // Criar os dias do mês
+    const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
-  // Criar os dias do mês
-  for (let day = 1; day <= daysInMonth; day++) {
-      const dayCell = document.createElement("div");
-      dayCell.className = "calendar-cell";
-      dayCell.textContent = day;
+    // Preencher os dias antes do dia 1 (não deixa células vazias)
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        const emptyCell = document.createElement("div");
+        emptyCell.className = "calendar-cell empty";
+        calendarGrid.appendChild(emptyCell);
+    }
 
-      // Adicionar classe "today" para o dia atual
-      if (day === date.getDate()) {
-          dayCell.classList.add("today");
-      }
+    // Criar os dias do mês
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayCell = document.createElement("div");
+        dayCell.className = "calendar-cell";
+        dayCell.textContent = day;
 
-      // Adicionar classe "past" para os dias anteriores ao dia atual
-      if (day < date.getDate()) {
-          dayCell.classList.add("past");
-      }
+        // Adicionar classe "today" para o dia atual
+        if (day === date.getDate()) {
+            dayCell.classList.add("today");
+        }
 
-      calendarGrid.appendChild(dayCell);
-  }
+        // Adicionar classe "past" para os dias anteriores ao dia atual
+        if (day < date.getDate()) {
+            dayCell.classList.add("past");
+        }
 
-  calendarContainer.appendChild(calendarGrid);
+        // Adicionar evento de clique no dia
+        dayCell.addEventListener("click", () => {
+            filterTasksByDate(day, tasks);
+        });
+
+        calendarGrid.appendChild(dayCell);
+    }
+
+    calendarContainer.appendChild(calendarGrid);
+
+    // Resetar o calendário e voltar para todas as tarefas ao clicar no botão
+    resetButton.addEventListener("click", () => {
+        resetCalendar(tasks);  // Mostrar todas as tarefas novamente
+    });
 }
 
 
+function filterTasksByDate(day, tasks) {
+    const date = new Date();
+    date.setDate(day); // Definir o dia para o dia clicado
+    date.setMonth(date.getMonth()); // Garantir o mês correto
+    date.setFullYear(date.getFullYear());
+
+    // Formatar a data clicada como YYYY-MM-DD
+    const selectedDate = date.toISOString().split('T')[0]; 
+
+    // Filtrar as tarefas comparando a data (em formato YYYY-MM-DD)
+    const filteredTasks = tasks.filter(task => {
+        if (task.dueDate) {
+            // Certifique-se de que a data está no formato correto (YYYY-MM-DD)
+            const taskDueDate = new Date(task.dueDate).toISOString().split('T')[0]; // Converter para string YYYY-MM-DD
+            return taskDueDate === selectedDate;
+        }
+        return false; // Caso não tenha uma dueDate
+    });
+
+    displayTasks(filteredTasks);
+}
+
+
+// Função para abrir o modal de edição
+function openEditModal(task) {
+    const taskModal = document.getElementById("task-modal");
+    const taskForm = document.getElementById("task-form");
+
+    // Preencher os campos do formulário com as informações da tarefa
+    document.getElementById("task-name").value = task.name;
+    document.getElementById("task-date").value = task.dueDate;
+    document.getElementById("task-priority").value = task.priority;
+    document.getElementById("task-id").value = task.id; // Armazenar o ID da tarefa
+
+    // Alterar o texto do título do modal
+    document.querySelector(".modal-content h2").textContent = "Editar Tarefa";
+
+    // Exibir o modal
+    taskModal.style.display = "flex";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  const newTaskButton = document.getElementById("new-task-button");
-  const taskModal = document.getElementById("task-modal");
-  const closeModalButton = document.getElementById("close-modal");
-  const taskForm = document.getElementById("task-form");
+    const newTaskButton = document.getElementById("new-task-button");
+    const taskModal = document.getElementById("task-modal");
+    const closeModalButton = document.getElementById("close-modal");
+    const taskForm = document.getElementById("task-form");
 
-  // Abrir o modal
-  newTaskButton.addEventListener("click", () => {
-      taskModal.style.display = "flex"; // Exibe o modal
-  });
+    // Abrir o modal para criação de nova tarefa
+    newTaskButton.addEventListener("click", () => {
+        document.querySelector(".modal-content h2").textContent = "Criar Nova Tarefa"; // Restabelece o título
+        taskModal.style.display = "flex"; // Exibe o modal
+    });
 
-  // Fechar o modal
-  closeModalButton.addEventListener("click", () => {
-      taskModal.style.display = "none"; // Oculta o modal
-  });
+    // Fechar o modal
+    closeModalButton.addEventListener("click", () => {
+        taskModal.style.display = "none"; // Oculta o modal
+    });
 
-  // Fechar o modal se clicar fora dele
-  window.addEventListener("click", (event) => {
-      if (event.target === taskModal) {
-          taskModal.style.display = "none";
-      }
-  });
+    // Fechar o modal se clicar fora dele
+    window.addEventListener("click", (event) => {
+        if (event.target === taskModal) {
+            taskModal.style.display = "none";
+        }
+    });
 
-  // Submissão do formulário (adicionar tarefa)
-  taskForm.addEventListener("submit", (event) => {
-      event.preventDefault();
+    // Submissão do formulário (criar ou editar tarefa)
+    taskForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-      const taskName = document.getElementById("task-name").value;
-      const taskDate = document.getElementById("task-date").value;
-      const taskPriority = document.getElementById("task-priority").value;
+        const taskId = document.getElementById("task-id").value;
+        const taskName = document.getElementById("task-name").value;
+        const taskDate = document.getElementById("task-date").value;
+        const taskPriority = document.getElementById("task-priority").value;
 
-      // Aqui você pode adicionar a lógica para criar uma nova tarefa
-      // Por exemplo, adicionar a nova tarefa à lista de tarefas
-      console.log("Tarefa criada:", { taskName, taskDate, taskPriority });
+        // Verificar se a data de vencimento é no futuro
+        const currentDate = new Date();
+        const selectedDate = new Date(taskDate);
 
-      
-      taskModal.style.display = "none";
-  });
+        // Verificar se a data selecionada é no futuro
+        if (selectedDate < currentDate) {
+            alert("A data e hora de vencimento não podem ser no passado.");
+            return; // Impede a criação da tarefa
+        }
+
+        const taskData = {
+            name: taskName,
+            dueDate: taskDate,
+            priority: taskPriority,
+            completed: false,
+            completedAt: null
+        };
+
+        if (taskId) {
+            // Atualizar tarefa existente
+            await updateTask(taskId, taskData);
+            console.log("Tarefa editada:", taskData);
+        } else {
+            // Criar nova tarefa
+            await createTask(taskData);
+            console.log("Tarefa criada:", taskData);
+        }
+
+        taskModal.style.display = "none";
+    });
+});
+
+// Função para resetar o filtro do calendário e exibir todas as tarefas
+function resetCalendar(tasks) {
+    displayTasks(filterUpcomingTasks(tasks));
+}
+
+// Adiciona o evento de clique no botão de reset
+document.getElementById("reset-calendar-button").addEventListener("click", () => {
+    resetCalendar(tasks);  // Passa as tarefas completas para exibir todas
 });
