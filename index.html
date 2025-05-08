@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="letter-f-initial-icon-logo-template_23987-54-removebg-preview.png  ">
   <title>Focusly</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -12,9 +13,36 @@
   <div class="app-container">
     <div class="header">
       <h1>Focusly</h1>
-      <button id="new-task-button" class="new-task-button"><img src="https://pngimg.com/uploads/plus/small/plus_PNG100.png" alt="create task"></button> <!-- Botão "Nova Tarefa" -->
       <input type="text" id="search-input" class="search-bar" placeholder="Search tasks...">
+      <button id="new-task-button" class="new-task-button">
+        <img src="https://pngimg.com/uploads/plus/small/plus_PNG100.png" alt="create task">
+      </button>
     </div>
+    
+    <div class="filters">
+      <select id="tag-filter">
+        <option value="">Filtrar por Tag</option>
+        <option value="Trabalho">💼 Trabalho</option>
+        <option value="Lazer">🎮 Lazer</option>
+        <option value="Escola">📚 Escola</option>
+        <option value="Desporto">🏃 Desporto</option>
+        <option value="Outros">🧩 Outros</option>
+      </select>
+    
+      <select id="priority-filter">
+        <option value="">Ordenar por Prioridade</option>
+        <option value="3">Alta</option>
+        <option value="2">Média</option>
+        <option value="1">Baixa</option>
+      </select>
+    
+      <select id="date-filter">
+        <option value="default">Ordenar por Data</option>
+        <option value="asc">Data ↑</option>
+        <option value="desc">Data ↓</option>
+      </select>
+    </div>
+    
   
     <div class="main-content">
       <div class="task-grid">

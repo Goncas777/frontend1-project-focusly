@@ -2,31 +2,52 @@ import { fetchTasks, createTask, updateTask, deleteTask } from "./fetch.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const tasks = await fetchTasks();
-    displayTasks(filterUpcomingTasks(tasks));  // Filtra as tarefas
+    displayTasks(filterUpcomingTasks(tasks));
     generateCalendar(tasks);
 
     const searchInput = document.getElementById("search-input");
     searchInput.addEventListener("input", () => filterTasks(tasks));
+    document.getElementById("tag-filter").addEventListener("change", () => applyAllFilters(tasks));
+    document.getElementById("priority-filter").addEventListener("change", () => applyAllFilters(tasks));
+    document.getElementById("date-filter").addEventListener("change", () => applyAllFilters(tasks));
 });
 
 function filterUpcomingTasks(tasks) {
     const today = new Date();
-    
-    // Subtrai 2 dias de hoje para encontrar a data limite
     const twoDaysAgo = new Date(today);
     twoDaysAgo.setDate(today.getDate() - 2);
-
-    // Filtra as tarefas, mantendo as que têm dueDate maior ou igual a dois dias atrás
     return tasks.filter(task => {
         if (task.dueDate) {
             const taskDate = new Date(task.dueDate);
-            // Compara a data da tarefa com dois dias antes de hoje
             return taskDate >= twoDaysAgo;
         }
-        return false; // Caso a tarefa não tenha dueDate
+        return false;
     });
 }
 
+function applyAllFilters(tasks) {
+    const tagValue = document.getElementById("tag-filter").value;
+    const priorityValue = document.getElementById("priority-filter").value;
+    const dateValue = document.getElementById("date-filter").value;
+
+    let filtered = filterUpcomingTasks(tasks);
+
+    if (tagValue) {
+        filtered = filtered.filter(task => task.tags && task.tags.includes(tagValue));
+    }
+
+    if (priorityValue) {
+        filtered = filtered.filter(task => String(task.priority) === priorityValue);
+    }
+
+    if (dateValue === "asc") {
+        filtered = filtered.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+    } else if (dateValue === "desc") {
+        filtered = filtered.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
+    }
+
+    displayTasks(filtered);
+}
 
 function displayTasks(tasks) {
     const taskContainer = document.querySelector(".task-grid");
@@ -50,9 +71,9 @@ function createTaskCard(task) {
     const card = document.createElement("div");
     card.className = "todo-item";
 
-    // Botão de menu (três pontos)
     const menuButton = document.createElement("button");
     menuButton.className = "menu-button";
+    menuButton.title = "Opções";
     menuButton.onclick = () => toggleMenu(menuButton);
 
     const menuIcon = document.createElement("i");
@@ -68,7 +89,6 @@ function createTaskCard(task) {
     menuButton.appendChild(menuIcon);
     card.appendChild(menuButton);
 
-    // Menu de ações
     const actionMenu = document.createElement("div");
     actionMenu.className = "action-menu";
     const actions = [
@@ -100,15 +120,13 @@ function createTaskCard(task) {
             }
         }
     ];
-    
-    
 
     actions.forEach(({ title, icon, onclick }) => {
         const button = document.createElement("button");
         button.title = title;
     
         button.addEventListener("click", (event) => {
-            event.stopPropagation(); // impede que o clique feche o menu antes de executar
+            event.stopPropagation();
             if (onclick) onclick();
         });
     
@@ -125,17 +143,14 @@ function createTaskCard(task) {
         button.appendChild(i);
         actionMenu.appendChild(button);
     });
-    
 
     card.appendChild(actionMenu);
 
-    // Título da tarefa
     const title = document.createElement("div");
     title.className = "title";
     title.textContent = task.name || "Sem título";
     card.appendChild(title);
 
-    // Informações da tarefa
     const meta = document.createElement("div");
     meta.className = "todo-meta";
 
@@ -157,7 +172,6 @@ function createTaskCard(task) {
     meta.appendChild(span);
     card.appendChild(meta);
 
-    // Verifica se a tarefa foi completada e adiciona o emoji de check verde
     if (task.completed) {
         const checkEmoji = document.createElement("span");
         checkEmoji.textContent = "✅";
@@ -166,12 +180,12 @@ function createTaskCard(task) {
         checkEmoji.style.right = "10px";
         checkEmoji.style.fontSize = "1.5rem";
         card.appendChild(checkEmoji);
-    };
+    }
 
     if (task.tags && task.tags.length > 0) {
         const tagContainer = document.createElement("div");
         tagContainer.className = "tag-container";
-    
+
         const emojiMap = {
             "Trabalho": "💼",
             "Lazer": "🎮",
@@ -179,20 +193,19 @@ function createTaskCard(task) {
             "Desporto": "🏃",
             "Outros": "🧩"
         };
-    
+
         task.tags.forEach(tag => {
             const tagEl = document.createElement("span");
             tagEl.className = "tag";
             tagEl.textContent = `${emojiMap[tag] || ""} ${tag}`;
             tagContainer.appendChild(tagEl);
         });
-    
+
         card.appendChild(tagContainer);
     }
 
     return card;
 }
-
 
 function formatDueDate(dueDate) {
     const date = new Date(dueDate);
@@ -228,44 +241,37 @@ function generateCalendar(tasks) {
     calendarHeader.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
     calendarContainer.appendChild(calendarHeader);
 
-    // Criar o botão de reset
     const resetButton = document.createElement("button");
     resetButton.id = "reset-calendar-button";
     resetButton.className = "reset-button";
-    resetButton.textContent = "Resetar Pesquisa"; // Título do botão
+    resetButton.textContent = "Resetar Pesquisa";
     calendarContainer.appendChild(resetButton);
 
     const calendarGrid = document.createElement("div");
     calendarGrid.className = "calendar-grid";
 
-    // Criar os dias do mês
     const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
-    // Preencher os dias antes do dia 1 (não deixa células vazias)
     for (let i = 0; i < firstDayOfMonth; i++) {
         const emptyCell = document.createElement("div");
         emptyCell.className = "calendar-cell empty";
         calendarGrid.appendChild(emptyCell);
     }
 
-    // Criar os dias do mês
     for (let day = 1; day <= daysInMonth; day++) {
         const dayCell = document.createElement("div");
         dayCell.className = "calendar-cell";
         dayCell.textContent = day;
 
-        // Adicionar classe "today" para o dia atual
         if (day === date.getDate()) {
             dayCell.classList.add("today");
         }
 
-        // Adicionar classe "past" para os dias anteriores ao dia atual
         if (day < date.getDate()) {
             dayCell.classList.add("past");
         }
 
-        // Adicionar evento de clique no dia
         dayCell.addEventListener("click", () => {
             filterTasksByDate(day, tasks);
         });
@@ -275,64 +281,48 @@ function generateCalendar(tasks) {
 
     calendarContainer.appendChild(calendarGrid);
 
-    // Resetar o calendário e voltar para todas as tarefas ao clicar no botão
     resetButton.addEventListener("click", () => {
-        resetCalendar(tasks);  // Mostrar todas as tarefas novamente
+        resetCalendar(tasks);
     });
 }
 
-
 function filterTasksByDate(day, tasks) {
     const date = new Date();
-    date.setDate(day); // Definir o dia para o dia clicado
-    date.setMonth(date.getMonth()); // Garantir o mês correto
+    date.setDate(day);
+    date.setMonth(date.getMonth());
     date.setFullYear(date.getFullYear());
 
-    // Formatar a data clicada como YYYY-MM-DD
-    const selectedDate = date.toISOString().split('T')[0]; 
+    const selectedDate = date.toISOString().split('T')[0];
 
-    // Filtrar as tarefas comparando a data (em formato YYYY-MM-DD)
     const filteredTasks = tasks.filter(task => {
         if (task.dueDate) {
-            // Certifique-se de que a data está no formato correto (YYYY-MM-DD)
-            const taskDueDate = new Date(task.dueDate).toISOString().split('T')[0]; // Converter para string YYYY-MM-DD
+            const taskDueDate = new Date(task.dueDate).toISOString().split('T')[0];
             return taskDueDate === selectedDate;
         }
-        return false; // Caso não tenha uma dueDate
+        return false;
     });
 
     displayTasks(filteredTasks);
 }
 
-
-// Função para abrir o modal de edição
 function openEditModal(task) {
     const taskModal = document.getElementById("task-modal");
 
-    // Preencher os campos do formulário
     document.getElementById("task-name").value = task.name;
     document.getElementById("task-date").value = task.dueDate;
     document.getElementById("task-priority").value = task.priority;
     document.getElementById("task-id").value = task.id;
     document.getElementById("task-completed").checked = !!task.completed;
 
-    // Tags
     document.querySelectorAll('#tag-options input[type="checkbox"]').forEach(cb => {
         cb.checked = task.tags?.includes(cb.value);
     });
 
-    // Mostrar campo "Concluída?"
     document.getElementById("completed-field").style.display = "block";
-
-    // Atualizar textos
     document.querySelector(".modal-content h2").textContent = "Editar Tarefa";
     document.querySelector(".submit-button").textContent = "Editar Tarefa";
-
-    // Exibir modal
     taskModal.style.display = "flex";
 }
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
     const newTaskButton = document.getElementById("new-task-button");
@@ -340,35 +330,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeModalButton = document.getElementById("close-modal");
     const taskForm = document.getElementById("task-form");
 
-    // Abrir o modal para criação de nova tarefa
     newTaskButton.addEventListener("click", () => {
         document.getElementById("task-form").reset();
         document.getElementById("task-id").value = "";
-    
-        // Esconder campo "Concluída?"
         document.getElementById("completed-field").style.display = "none";
-    
-        // Atualizar textos
         document.querySelector(".modal-content h2").textContent = "Criar Nova Tarefa";
         document.querySelector(".submit-button").textContent = "Criar Tarefa";
-    
         taskModal.style.display = "flex";
     });
-    
 
-    // Fechar o modal
     closeModalButton.addEventListener("click", () => {
-        taskModal.style.display = "none"; // Oculta o modal
+        taskModal.style.display = "none";
     });
 
-    // Fechar o modal se clicar fora dele
     window.addEventListener("click", (event) => {
         if (event.target === taskModal) {
             taskModal.style.display = "none";
         }
     });
 
-    // Submissão do formulário (criar ou editar tarefa)
     taskForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
@@ -379,15 +359,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const tagCheckboxes = document.querySelectorAll('#tag-options input[type="checkbox"]:checked');
         const selectedTags = Array.from(tagCheckboxes).map(cb => cb.value);
 
-
-        // Verificar se a data de vencimento é no futuro
         const currentDate = new Date();
         const selectedDate = new Date(taskDate);
 
-        // Verificar se a data selecionada é no futuro
         if (selectedDate < currentDate) {
             alert("A data e hora de vencimento não podem ser no passado.");
-            return; // Impede a criação da tarefa
+            return;
         }
 
         const taskData = {
@@ -397,14 +374,11 @@ document.addEventListener("DOMContentLoaded", () => {
             completed: document.getElementById("task-completed").checked,
             tags: selectedTags
         };
-        
 
         if (taskId) {
-            // Atualizar tarefa existente
             await updateTask(taskId, taskData);
             console.log("Tarefa editada:", taskData);
         } else {
-            // Criar nova tarefa
             await createTask(taskData);
             console.log("Tarefa criada:", taskData);
         }
@@ -417,4 +391,3 @@ function resetCalendar(tasks) {
     const filtered = filterUpcomingTasks(tasks);
     displayTasks(filtered);
 }
-
