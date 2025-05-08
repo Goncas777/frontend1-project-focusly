@@ -1,4 +1,4 @@
-import { fetchTasks, createTask, updateTask } from "./fetch.js";
+import { fetchTasks, createTask, updateTask, deleteTask } from "./fetch.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const tasks = await fetchTasks();
@@ -72,29 +72,60 @@ function createTaskCard(task) {
     const actionMenu = document.createElement("div");
     actionMenu.className = "action-menu";
     const actions = [
-        { title: "Feita", icon: "https://cdn2.iconfinder.com/data/icons/my-cubicle/512/Check_Mark-512.png" },
-        { title: "Editar", icon: "https://static-00.iconduck.com/assets.00/edit-square-icon-1024x1022-pd40h6x1.png", onclick: () => openEditModal(task) },
-        { title: "Apagar", icon: "https://static-00.iconduck.com/assets.00/edit-delete-symbolic-icon-417x512-fbzatn0z.png" }
+        {
+            title: "Feita",
+            icon: "https://cdn2.iconfinder.com/data/icons/my-cubicle/512/Check_Mark-512.png",
+            onclick: async () => {
+                console.log("Feita clicada");
+                await updateTask({ ...task, completed: true });
+                const updatedTasks = await fetchTasks();
+                displayTasks(filterUpcomingTasks(updatedTasks));
+            }            
+        },
+        {
+            title: "Editar",
+            icon: "https://static-00.iconduck.com/assets.00/edit-square-icon-1024x1022-pd40h6x1.png",
+            onclick: () => openEditModal(task)
+        },
+        {
+            title: "Apagar",
+            icon: "https://static-00.iconduck.com/assets.00/edit-delete-symbolic-icon-417x512-fbzatn0z.png",
+            onclick: async () => {
+                const confirmDelete = confirm("Tem a certeza de que deseja apagar esta tarefa?");
+                if (confirmDelete) {
+                    await deleteTask(task.id);
+                    const updatedTasks = await fetchTasks();
+                    displayTasks(filterUpcomingTasks(updatedTasks));
+                }
+            }
+        }
     ];
+    
+    
 
     actions.forEach(({ title, icon, onclick }) => {
         const button = document.createElement("button");
         button.title = title;
-        if (onclick) button.onclick = onclick;
-
+    
+        button.addEventListener("click", (event) => {
+            event.stopPropagation(); // impede que o clique feche o menu antes de executar
+            if (onclick) onclick();
+        });
+    
         const i = document.createElement("i");
         i.className = `fas fa-${title.toLowerCase()}`;
-
+    
         const img = document.createElement("img");
         img.src = icon;
         img.style.width = "20px";
         img.style.height = "20px";
         img.alt = "";
-
+    
         i.appendChild(img);
         button.appendChild(i);
         actionMenu.appendChild(button);
     });
+    
 
     card.appendChild(actionMenu);
 
@@ -135,6 +166,28 @@ function createTaskCard(task) {
         checkEmoji.style.right = "10px";
         checkEmoji.style.fontSize = "1.5rem";
         card.appendChild(checkEmoji);
+    };
+
+    if (task.tags && task.tags.length > 0) {
+        const tagContainer = document.createElement("div");
+        tagContainer.className = "tag-container";
+    
+        const emojiMap = {
+            "Trabalho": "💼",
+            "Lazer": "🎮",
+            "Escola": "📚",
+            "Desporto": "🏃",
+            "Outros": "🧩"
+        };
+    
+        task.tags.forEach(tag => {
+            const tagEl = document.createElement("span");
+            tagEl.className = "tag";
+            tagEl.textContent = `${emojiMap[tag] || ""} ${tag}`;
+            tagContainer.appendChild(tagEl);
+        });
+    
+        card.appendChild(tagContainer);
     }
 
     return card;
@@ -161,7 +214,7 @@ function toggleMenu(button) {
 }
 
 document.addEventListener("click", function (e) {
-    if (!e.target.closest(".todo-item")) {
+    if (!e.target.closest(".action-menu") && !e.target.closest(".menu-button")) {
         document.querySelectorAll(".action-menu").forEach(m => m.style.display = "none");
     }
 });
@@ -179,7 +232,7 @@ function generateCalendar(tasks) {
     const resetButton = document.createElement("button");
     resetButton.id = "reset-calendar-button";
     resetButton.className = "reset-button";
-    resetButton.textContent = "Resetar Calendário"; // Título do botão
+    resetButton.textContent = "Resetar Pesquisa"; // Título do botão
     calendarContainer.appendChild(resetButton);
 
     const calendarGrid = document.createElement("div");
@@ -255,20 +308,31 @@ function filterTasksByDate(day, tasks) {
 // Função para abrir o modal de edição
 function openEditModal(task) {
     const taskModal = document.getElementById("task-modal");
-    const taskForm = document.getElementById("task-form");
 
-    // Preencher os campos do formulário com as informações da tarefa
+    // Preencher os campos do formulário
     document.getElementById("task-name").value = task.name;
     document.getElementById("task-date").value = task.dueDate;
     document.getElementById("task-priority").value = task.priority;
-    document.getElementById("task-id").value = task.id; // Armazenar o ID da tarefa
+    document.getElementById("task-id").value = task.id;
+    document.getElementById("task-completed").checked = !!task.completed;
 
-    // Alterar o texto do título do modal
+    // Tags
+    document.querySelectorAll('#tag-options input[type="checkbox"]').forEach(cb => {
+        cb.checked = task.tags?.includes(cb.value);
+    });
+
+    // Mostrar campo "Concluída?"
+    document.getElementById("completed-field").style.display = "block";
+
+    // Atualizar textos
     document.querySelector(".modal-content h2").textContent = "Editar Tarefa";
+    document.querySelector(".submit-button").textContent = "Editar Tarefa";
 
-    // Exibir o modal
+    // Exibir modal
     taskModal.style.display = "flex";
 }
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const newTaskButton = document.getElementById("new-task-button");
@@ -278,9 +342,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Abrir o modal para criação de nova tarefa
     newTaskButton.addEventListener("click", () => {
-        document.querySelector(".modal-content h2").textContent = "Criar Nova Tarefa"; // Restabelece o título
-        taskModal.style.display = "flex"; // Exibe o modal
+        document.getElementById("task-form").reset();
+        document.getElementById("task-id").value = "";
+    
+        // Esconder campo "Concluída?"
+        document.getElementById("completed-field").style.display = "none";
+    
+        // Atualizar textos
+        document.querySelector(".modal-content h2").textContent = "Criar Nova Tarefa";
+        document.querySelector(".submit-button").textContent = "Criar Tarefa";
+    
+        taskModal.style.display = "flex";
     });
+    
 
     // Fechar o modal
     closeModalButton.addEventListener("click", () => {
@@ -302,6 +376,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const taskName = document.getElementById("task-name").value;
         const taskDate = document.getElementById("task-date").value;
         const taskPriority = document.getElementById("task-priority").value;
+        const tagCheckboxes = document.querySelectorAll('#tag-options input[type="checkbox"]:checked');
+        const selectedTags = Array.from(tagCheckboxes).map(cb => cb.value);
+
 
         // Verificar se a data de vencimento é no futuro
         const currentDate = new Date();
@@ -317,9 +394,10 @@ document.addEventListener("DOMContentLoaded", () => {
             name: taskName,
             dueDate: taskDate,
             priority: taskPriority,
-            completed: false,
-            completedAt: null
+            completed: document.getElementById("task-completed").checked,
+            tags: selectedTags
         };
+        
 
         if (taskId) {
             // Atualizar tarefa existente
@@ -335,12 +413,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Função para resetar o filtro do calendário e exibir todas as tarefas
 function resetCalendar(tasks) {
-    displayTasks(filterUpcomingTasks(tasks));
+    const filtered = filterUpcomingTasks(tasks);
+    displayTasks(filtered);
 }
 
-// Adiciona o evento de clique no botão de reset
-document.getElementById("reset-calendar-button").addEventListener("click", () => {
-    resetCalendar(tasks);  // Passa as tarefas completas para exibir todas
-});

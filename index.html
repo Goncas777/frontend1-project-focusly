@@ -59,12 +59,18 @@
 
       <!-- Tags -->
       <div class="form-group">
-        <label for="task-tags">Tags</label>
-        <input type="text" id="task-tags" placeholder="Insira tags separadas por vírgula">
+        <label>Tags</label>
+        <div id="tag-options">
+          <label><input type="checkbox" value="Trabalho"> 💼 Trabalho</label><br>
+          <label><input type="checkbox" value="Lazer"> 🎮 Lazer</label><br>
+          <label><input type="checkbox" value="Escola"> 📚 Escola</label><br>
+          <label><input type="checkbox" value="Desporto"> 🏃 Desporto</label><br>
+          <label><input type="checkbox" value="Outros"> 🧩 Outros</label>
+        </div>
       </div>
 
       <!-- Tarefa Concluída -->
-      <div class="form-group">
+      <div class="form-group" id="completed-field">
         <label for="task-completed">Concluída?</label>
         <input type="checkbox" id="task-completed">
       </div>

@@ -43,3 +43,20 @@ export async function updateTask(taskData) {
       console.error("Erro ao atualizar tarefa:", error);
   }
 }
+
+export async function deleteTask(taskId) {
+  try {
+      const response = await fetch(`${apiURL}/tasks/${taskId}`, {
+          method: 'DELETE',
+      });
+
+      if (!response.ok) {
+          throw new Error("Erro ao apagar a tarefa.");
+      }
+
+      return await response.json();  // Retorna a resposta após a exclusão
+  } catch (error) {
+      console.error("Erro ao apagar tarefa:", error);
+  }
+}
+
