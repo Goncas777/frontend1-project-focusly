@@ -368,6 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const taskData = {
+            id: taskId,
             name: taskName,
             dueDate: taskDate,
             priority: taskPriority,
@@ -376,7 +377,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         if (taskId) {
-            await updateTask(taskId, taskData);
+            await updateTask(taskData);
             console.log("Tarefa editada:", taskData);
         } else {
             await createTask(taskData);
