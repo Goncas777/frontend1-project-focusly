@@ -375,6 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
             completed: document.getElementById("task-completed").checked,
             tags: selectedTags
         };
+        
 
         if (taskId) {
             await updateTask(taskData);
@@ -383,6 +384,9 @@ document.addEventListener("DOMContentLoaded", () => {
             await createTask(taskData);
             console.log("Tarefa criada:", taskData);
         }
+
+        const updatedTasks = await fetchTasks();
+        displayTasks(filterUpcomingTasks(updatedTasks));
 
         taskModal.style.display = "none";
     });
