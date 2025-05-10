@@ -400,7 +400,7 @@ function resetCalendar(tasks) {
 
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/service-worker.js")
+      navigator.serviceWorker.register("/frontend1-project-focusly/scripts/service-worker.js")
         .then((reg) => console.log("Service Worker registado:", reg))
         .catch((err) => console.log("Erro ao registar o Service Worker:", err));
     });

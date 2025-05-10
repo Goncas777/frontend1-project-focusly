@@ -1,12 +1,12 @@
 const CACHE_NAME = 'focusly-cache-v1';
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/style.css",
-  "/scripts/script.js",
-  "/scripts/fetch.js",
-  "/scripts/canvas.js",
-  "letter-f-initial-icon-logo-template_23987-54-removebg-preview.png"
+  "/frontend1-project-focusly/",
+  "/frontend1-project-focusly/index.html",
+  "/frontend1-project-focusly/style.css",
+  "/frontend1-project-focusly/scripts/script.js",
+  "/frontend1-project-focusly/scripts/fetch.js",
+  "/frontend1-project-focusly/scripts/canvas.js",
+  "/frontend1-project-focusly/letter-f-initial-icon-logo-template_23987-54-removebg-preview.png"
 ];
 
 self.addEventListener('install', event => {
