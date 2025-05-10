@@ -396,3 +396,13 @@ function resetCalendar(tasks) {
     const filtered = filterUpcomingTasks(tasks);
     displayTasks(filtered);
 }
+
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/service-worker.js")
+        .then((reg) => console.log("Service Worker registado:", reg))
+        .catch((err) => console.log("Erro ao registar o Service Worker:", err));
+    });
+  }
+  

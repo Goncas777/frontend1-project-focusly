@@ -7,6 +7,7 @@
   <title>Focusly</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
 
@@ -50,6 +51,7 @@
       </div>
   
       <div class="calendar-container">
+        
 
         <div class="calendar">
           <!-- O calendário será gerado aqui via JavaScript -->
@@ -113,7 +115,9 @@
   </div>
 </div>
 
+<canvas id="linhaCanvas"></canvas>
 
   <script src="scripts/script.js" type="module"></script>
+  <script src="scripts/canvas.js"></script>
 </body>
 </html>
