@@ -22,7 +22,7 @@ body {
 
 .header {
   display: flex;
-  justify-content: center; /* Centraliza o conteúdo no eixo horizontal */
+  justify-content: center; 
   align-items: center;
   gap: 1rem;
   margin-bottom: 2rem;
@@ -30,7 +30,7 @@ body {
 }
 
 .header h1 {
-  margin-right: auto; /* Empurra o h1 para a esquerda */
+  margin-right: auto; 
   font-size: 1.75rem;
   font-weight: 800;
 }
@@ -93,7 +93,7 @@ body {
   align-self: flex-start;
   display: flex;
   flex-direction: column;
-  align-items: center; /* centraliza conteúdo */
+  align-items: center;
 }
 
 .calendar {
@@ -101,7 +101,7 @@ body {
   border-radius: 1.25rem;
   padding: 1.5rem;
   width: 100%;
-  max-width: 400px; /* antes 320px */
+  max-width: 400px; 
 }
 
 .calendar-grid {
@@ -236,7 +236,7 @@ body {
 }
 
 
-/* Botão "Nova Tarefa" */
+
 .new-task-button {
   background-color: #393637;
   color: #fff;
@@ -246,9 +246,9 @@ body {
   border-radius: 1rem;
   font-size: 1.2rem;
   cursor: pointer;
-  position: absolute; /* Tornando o botão fixo abaixo do calendário */
-  left: 50%; /* Posicionando horizontalmente no meio */
-  transform: translateX(-50%); /* Ajuste fino para centralizar */
+  position: absolute; 
+  left: 50%; 
+  transform: translateX(-50%);
   box-shadow: 2px 2px 2px rgba(253, 49, 212, 0.406);
   transition: background-color 0.3s;
 }
@@ -262,9 +262,9 @@ body {
   height: 20px;
 }
 
-/* Estilos do Modal */
+
 .task-modal {
-  display: none; /* Inicialmente oculto */
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -314,7 +314,7 @@ body {
   margin-top: 0.5rem;
 }
 
-/* Estilo para o campo checkbox */
+
 .form-group input[type="checkbox"] {
   margin-top: 0.5rem;
   cursor: pointer;
@@ -351,10 +351,10 @@ body {
 }
 
 
-/* Estilos para o botão de reset */
+
 .reset-button {
-  background-color: #ce2130cb;  /* Cor de fundo vermelha */
-  color: white;  /* Cor do texto branca */
+  background-color: #ce2130cb;  
+  color: white;  
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -364,7 +364,7 @@ body {
 }
 
 .reset-button:hover {
-  background-color: #ff6b81;  /* Cor mais clara quando passar o mouse */
+  background-color: #ff6b81;
 }
 
 
@@ -498,7 +498,7 @@ body {
 }
 
 
-/* Corrige quebra quando a tela é menor que 1700px */
+
 @media (max-width: 1700px) {
   .app-container {
     margin: 0 1rem 2rem 1rem;
@@ -524,7 +524,7 @@ body {
   }
 }
 
-/* Melhora exibição para tablets */
+
 @media (max-width: 900px) {
   .calendar-grid {
     grid-template-columns: repeat(7, 1fr);
@@ -546,7 +546,7 @@ body {
   }
 }
 
-/* Ajuste para telemóveis muito pequenos */
+
 @media (max-width: 480px) {
   body {
     padding: 1rem;
