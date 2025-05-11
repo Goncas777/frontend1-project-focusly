@@ -23,7 +23,6 @@ export const createTask = async (newTask) => {
 };
 
 
-// Função para atualizar uma tarefa
 export async function updateTask(taskData) {
   try {
       const response = await fetch(`${apiURL}/tasks/${taskData.id}`, {
@@ -54,7 +53,7 @@ export async function deleteTask(taskId) {
           throw new Error("Erro ao apagar a tarefa.");
       }
 
-      return await response.json();  // Retorna a resposta após a exclusão
+      return await response.json(); 
   } catch (error) {
       console.error("Erro ao apagar tarefa:", error);
   }
