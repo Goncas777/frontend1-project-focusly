@@ -26,37 +26,35 @@
   
     <div class="main-content">
       <div class="task-grid">
-        <!-- Tarefas serão carregadas aqui via JavaScript -->
-      </div>
-  
+
+      </div>  
       <div class="calendar-container">
         
 
         <div class="calendar">
-          <!-- O calendário será gerado aqui via JavaScript -->
         </div>
       </div>
     </div>
   </div>
   
-<!-- Modal para Nova Tarefa -->
+
 <div id="task-modal" class="task-modal">
   <div class="modal-content">
     <h2>Criar Nova Tarefa</h2>
     <form id="task-form">
-      <!-- Nome da Tarefa -->
+
       <div class="form-group">
         <label for="task-name">Nome da Tarefa</label>
         <input type="text" id="task-name" placeholder="Digite o nome da tarefa" required>
       </div>
 
-      <!-- Data de Vencimento -->
+
       <div class="form-group">
         <label for="task-date">Data de Vencimento</label>
         <input type="datetime-local" id="task-date" required>
       </div>
 
-      <!-- Prioridade -->
+
       <div class="form-group">
         <label for="task-priority">Prioridade</label>
         <select id="task-priority" required>
@@ -66,7 +64,7 @@
         </select>
       </div>
 
-      <!-- Tags -->
+
       <div class="form-group">
         <label>Tags</label>
         <div id="tag-options">
@@ -82,16 +80,16 @@
         <p id="horas"></p>
       </div>
 
-      <!-- Tarefa Concluída -->
+
       <div class="form-group" id="completed-field">
         <label for="task-completed">Concluída?</label>
         <input type="checkbox" id="task-completed">
       </div>
 
-      <!-- ID da Tarefa (visível apenas para edição, pode ser oculto em um novo formulário) -->
+
       <input type="hidden" id="task-id">
 
-      <!-- Botões -->
+
       <button type="submit" class="submit-button">Criar Tarefa</button>
       <button type="button" class="close-button" id="close-modal">Fechar</button>
     </form>
