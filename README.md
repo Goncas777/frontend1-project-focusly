@@ -19,4 +19,4 @@
 - Configure PWA.
 - Use canvas in some way.
 
-- Apresentar projeto no portfolio desenvolvido em Web Pages
+- Apresentar projeto no portfolio desenvolvido em Web Pages (https://goncas777.github.io/Web-Pages---Portfolio/)
