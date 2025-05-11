@@ -20,28 +20,7 @@
       </button>
     </div>
     
-    <div class="filters">
-      <select id="tag-filter">
-        <option value="">Filtrar por Tag</option>
-        <option value="Trabalho">💼 Trabalho</option>
-        <option value="Lazer">🎮 Lazer</option>
-        <option value="Escola">📚 Escola</option>
-        <option value="Desporto">🏃 Desporto</option>
-        <option value="Outros">🧩 Outros</option>
-      </select>
-    
-      <select id="priority-filter">
-        <option value="">Ordenar por Prioridade</option>
-        <option value="3">Alta</option>
-        <option value="2">Média</option>
-        <option value="1">Baixa</option>
-      </select>
-    
-      <select id="date-filter">
-        <option value="default">Ordenar por Data</option>
-        <option value="asc">Data ↑</option>
-        <option value="desc">Data ↓</option>
-      </select>
+    <div class="filters" id ="filters">
     </div>
     
   
@@ -97,6 +76,10 @@
           <label><input type="checkbox" value="Desporto"> 🏃 Desporto</label><br>
           <label><input type="checkbox" value="Outros"> 🧩 Outros</label>
         </div>
+      </div>
+
+      <div>
+        <p id="horas"></p>
       </div>
 
       <!-- Tarefa Concluída -->

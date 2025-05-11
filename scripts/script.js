@@ -405,4 +405,16 @@ if ("serviceWorker" in navigator) {
         .catch((err) => console.log("Erro ao registar o Service Worker:", err));
     });
   }
+
+
+async function loadComponents() {
+    const components = await fetch("component.html");
+    const filters = await components.text();
+    document.getElementById("filters").innerHTML = filters;
+}
+
+loadComponents();
+
+
+
   
